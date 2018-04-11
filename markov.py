@@ -5,6 +5,7 @@ import sys
 import twitter
 import os
 
+N_GRAM_LENGTH = 2
 
 api = twitter.Api(consumer_key=os.environ['TWITTER_CONSUMER_KEY'],
                   consumer_secret=os.environ['TWITTER_CONSUMER_SECRET'],
@@ -79,23 +80,12 @@ def make_chains(text_string, n):
     return chains
 
 
-def make_text(chains, n):
+def make_text(chains, N_GRAM_LENGTH):
     """Return text from chains."""
-    # choose random first key from chains
-    # add both items in key to words list
-    # check if key is in chains, while key is in chains
-        # assign random value from chains[key] to chosen_word
-        # add chosen_word to words list
-        # generate new key using key[1] and chosen_word
-    # when key not in chain [words].join and return string
 
     words = []
     title_list = []
 
-    # put all keys into list
-    # check first element of each item with istitle()
-    # if True, append element (a tuple) to new_list
-    # key = choice(new_list)
     new_list = chains.keys()
     for item in new_list:
         if item[0].istitle():
@@ -107,26 +97,24 @@ def make_text(chains, n):
 
     while key in chains:
         chosen_word = choice(chains[key])
-        # print "chosen_word: ", chosen_word
         words.append(chosen_word)
-        # if chosen_word ends with "." or "?" break out of loop and return " ".join(words)
-        # else: continue with the loop
+
         if chosen_word[-1] in ".?!":
             break
         else:
             new_key = ()
-            for i in range(n-1):
+            for i in range(N_GRAM_LENGTH-1):
                 new_key += (key[i + 1],)
             new_key += (chosen_word,)
             key = new_key
     return " ".join(words)
 
 
-def check_length(random_text):
+def check_length(random_text, chains, N_GRAM_LENGTH):
     """Check length of tweet"""
 
-    if len(random_text) > 140:
-        random_text = make_text(chains, 3)
+    while len(random_text) > 140:
+        random_text = make_text(chains, N_GRAM_LENGTH)
 
     return random_text
 
@@ -136,11 +124,13 @@ input_path = sys.argv[1]
 input_text = open_and_read_file(input_path)
 
 # Get a Markov chain
-chains = make_chains(input_text, 3)
+chains = make_chains(input_text, N_GRAM_LENGTH)
 
 # Produce random text
-random_text = make_text(chains, 3)
+random_text = make_text(chains, N_GRAM_LENGTH)
 
-tweet = check_length(random_text)
+tweet = check_length(random_text, chains, N_GRAM_LENGTH)
+
+print tweet
 
 status = api.PostUpdate(tweet)
