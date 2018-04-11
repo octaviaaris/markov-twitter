@@ -3,15 +3,16 @@
 from random import choice
 import sys
 import twitter
+import os
 
-api = twitter.Api(consumer_key=[consumer key],
-                  consumer_secret=[consumer secret],
-                  access_token_key=[access token],
-                  access_token_secret=[access token secret])
+
+api = twitter.Api(consumer_key=os.environ['TWITTER_CONSUMER_KEY'],
+                  consumer_secret=os.environ['TWITTER_CONSUMER_SECRET'],
+                  access_token_key=os.environ['TWITTER_ACCESS_TOKEN_KEY'],
+                  access_token_secret=os.environ['TWITTER_ACCESS_TOKEN_SECRET'])
 
 api.VerifyCredentials()
 
-status = api.PostUpdate("Test Tweet")
 
 def open_and_read_file(file_path):
     """Take file path as string; return text as string.
@@ -121,6 +122,14 @@ def make_text(chains, n):
     return " ".join(words)
 
 
+def check_length(random_text):
+    """Check length of tweet"""
+
+    if len(random_text) > 140:
+        random_text = make_text(chains, 3)
+
+    return random_text
+
 input_path = sys.argv[1]
 
 # Open the file and turn it into one long string
@@ -132,4 +141,6 @@ chains = make_chains(input_text, 3)
 # Produce random text
 random_text = make_text(chains, 3)
 
-print random_text
+tweet = check_length(random_text)
+
+status = api.PostUpdate(tweet)
