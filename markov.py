@@ -2,7 +2,16 @@
 
 from random import choice
 import sys
+import twitter
 
+api = twitter.Api(consumer_key=[consumer key],
+                  consumer_secret=[consumer secret],
+                  access_token_key=[access token],
+                  access_token_secret=[access token secret])
+
+api.VerifyCredentials()
+
+status = api.PostUpdate("Test Tweet")
 
 def open_and_read_file(file_path):
     """Take file path as string; return text as string.
