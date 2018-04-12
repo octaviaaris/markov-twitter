@@ -2,17 +2,10 @@
 
 from random import choice
 import sys
-# import twitter
-# import os
+import twitter
+import os
 
 N_GRAM_LENGTH = 4
-
-# api = twitter.Api(consumer_key=os.environ['TWITTER_CONSUMER_KEY'],
-#                   consumer_secret=os.environ['TWITTER_CONSUMER_SECRET'],
-#                   access_token_key=os.environ['TWITTER_ACCESS_TOKEN_KEY'],
-#                   access_token_secret=os.environ['TWITTER_ACCESS_TOKEN_SECRET'])
-
-# api.VerifyCredentials()
 
 
 def open_and_read_file(file_path):
@@ -127,6 +120,19 @@ def make_text(chains, N_GRAM_LENGTH):
 
 #     return random_text
 
+def tweet(random_text):
+
+    api = twitter.Api(consumer_key=os.environ['TWITTER_CONSUMER_KEY'],
+                      consumer_secret=os.environ['TWITTER_CONSUMER_SECRET'],
+                      access_token_key=os.environ['TWITTER_ACCESS_TOKEN_KEY'],
+                      access_token_secret=os.environ['TWITTER_ACCESS_TOKEN_SECRET'])
+
+    api.VerifyCredentials()
+
+    # create prompt
+
+    return api.PostUpdate(random_text)
+
 input_path = sys.argv[1]
 
 # Open the file and turn it into one long string
@@ -140,6 +146,6 @@ random_text = make_text(chains, N_GRAM_LENGTH)
 
 # tweet = check_length(random_text, chains, N_GRAM_LENGTH)
 
-print random_text
+tweet(random_text)
 
 # status = api.PostUpdate(tweet)
