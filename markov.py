@@ -2,17 +2,17 @@
 
 from random import choice
 import sys
-import twitter
-import os
+# import twitter
+# import os
 
 N_GRAM_LENGTH = 4
 
-api = twitter.Api(consumer_key=os.environ['TWITTER_CONSUMER_KEY'],
-                  consumer_secret=os.environ['TWITTER_CONSUMER_SECRET'],
-                  access_token_key=os.environ['TWITTER_ACCESS_TOKEN_KEY'],
-                  access_token_secret=os.environ['TWITTER_ACCESS_TOKEN_SECRET'])
+# api = twitter.Api(consumer_key=os.environ['TWITTER_CONSUMER_KEY'],
+#                   consumer_secret=os.environ['TWITTER_CONSUMER_SECRET'],
+#                   access_token_key=os.environ['TWITTER_ACCESS_TOKEN_KEY'],
+#                   access_token_secret=os.environ['TWITTER_ACCESS_TOKEN_SECRET'])
 
-api.VerifyCredentials()
+# api.VerifyCredentials()
 
 
 def open_and_read_file(file_path):
@@ -83,7 +83,6 @@ def make_chains(text_string, n):
 def make_text(chains, N_GRAM_LENGTH):
     """Return text from chains."""
 
-    words = []
     title_list = []
 
     # create list of keys starting with title word
@@ -92,12 +91,11 @@ def make_text(chains, N_GRAM_LENGTH):
         if item[0].istitle():
             title_list.append(item)
 
-    print title_list
-
     while True:
+        words = []
+
         # generate first key
         key = choice(title_list)
-        print "key: ", key
         for item in key:
             words.append(item)
 
@@ -116,7 +114,6 @@ def make_text(chains, N_GRAM_LENGTH):
                 key = new_key
         # return " ".join(words)
         final_text = " ".join(words)
-        print final_text
 
         if len(final_text) <= 140:
             return final_text
