@@ -5,7 +5,7 @@ import sys
 import twitter
 import os
 
-N_GRAM_LENGTH = 2
+N_GRAM_LENGTH = 4
 
 api = twitter.Api(consumer_key=os.environ['TWITTER_CONSUMER_KEY'],
                   consumer_secret=os.environ['TWITTER_CONSUMER_SECRET'],
@@ -86,37 +86,49 @@ def make_text(chains, N_GRAM_LENGTH):
     words = []
     title_list = []
 
+    # create list of keys starting with title word
     new_list = chains.keys()
     for item in new_list:
         if item[0].istitle():
             title_list.append(item)
 
-    key = choice(title_list)
-    for item in key:
-        words.append(item)
+    print title_list
 
-    while key in chains:
-        chosen_word = choice(chains[key])
-        words.append(chosen_word)
+    while True:
+        # generate first key
+        key = choice(title_list)
+        print "key: ", key
+        for item in key:
+            words.append(item)
 
-        if chosen_word[-1] in ".?!":
-            break
-        else:
-            new_key = ()
-            for i in range(N_GRAM_LENGTH-1):
-                new_key += (key[i + 1],)
-            new_key += (chosen_word,)
-            key = new_key
-    return " ".join(words)
+        # generate rest of chain
+        while key in chains:
+            chosen_word = choice(chains[key])
+            words.append(chosen_word)
+
+            if chosen_word[-1] in """.?!"'""":
+                break
+            else:
+                new_key = ()
+                for i in range(N_GRAM_LENGTH-1):
+                    new_key += (key[i + 1],)
+                new_key += (chosen_word,)
+                key = new_key
+        # return " ".join(words)
+        final_text = " ".join(words)
+        print final_text
+
+        if len(final_text) <= 140:
+            return final_text
 
 
-def check_length(random_text, chains, N_GRAM_LENGTH):
-    """Check length of tweet"""
+# def check_length(random_text, chains, N_GRAM_LENGTH):
+#     """Check length of tweet"""
 
-    while len(random_text) > 140:
-        random_text = make_text(chains, N_GRAM_LENGTH)
+#     while len(random_text) > 140:
+#         random_text = make_text(chains, N_GRAM_LENGTH)
 
-    return random_text
+#     return random_text
 
 input_path = sys.argv[1]
 
@@ -129,8 +141,8 @@ chains = make_chains(input_text, N_GRAM_LENGTH)
 # Produce random text
 random_text = make_text(chains, N_GRAM_LENGTH)
 
-tweet = check_length(random_text, chains, N_GRAM_LENGTH)
+# tweet = check_length(random_text, chains, N_GRAM_LENGTH)
 
-print tweet
+print random_text
 
-status = api.PostUpdate(tweet)
+# status = api.PostUpdate(tweet)
